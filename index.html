@@ -56,7 +56,7 @@
             <div id="progressBar" class="bg-indigo-600 h-2 rounded-full progress-bar"></div>
         </div>
 
-        <form action="https:https://script.google.com/macros/s/AKfycbwsQfB2Ke7l6_xT4vvSdQuPaAXybk16vdns6vyYgSMoz3Yh105--j-QnNxTsXGAh48H/exec" method="POST" id="studentForm">
+        <form action="https://script.google.com/macros/s/AKfycbwsQfB2Ke7l6_xT4vvSdQuPaAXybk16vdns6vyYgSMoz3Yh105--j-QnNxTsXGAh48H/exec" method="POST" id="studentForm">
 
             <div class="space-y-8">
                 <!-- Paso 1: Datos del Estudiante y Opciones -->
@@ -341,26 +341,16 @@
                                 <label for="referencia" class="block text-sm font-medium text-gray-700">Referencia:</label>
                                 <input type="text" name="referencia" id="referencia" inputmode="numeric" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
-                            <!-- CAMPO CANCELADO - AHORA CON CHECKBOXES -->
+                            <!-- CAMPO CANCELADO -->
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700">Cancelado:</label>
-                                <div class="mt-1 space-y-2">
-                                    <div class="flex items-center">
-                                        <input type="checkbox" name="cancelado" id="canceladoMatricula" value="MATRICULA"
-                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                        <label for="canceladoMatricula" class="ml-2 block text-sm font-medium text-gray-800">MATRICULA</label>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <input type="checkbox" name="cancelado" id="canceladoMensualidad" value="MENSUALIDAD"
-                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                        <label for="canceladoMensualidad" class="ml-2 block text-sm font-medium text-gray-800">MENSUALIDAD</label>
-                                    </div>
-                                    <div class="flex items-center">
-                                        <input type="checkbox" name="cancelado" id="canceladoSeguroEscolar" value="SEGURO ESCOLAR"
-                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                        <label for="canceladoSeguroEscolar" class="ml-2 block text-sm font-medium text-gray-800">SEGURO ESCOLAR</label>
-                                    </div>
-                                </div>
+                                <label for="cancelado" class="block text-sm font-medium text-gray-700">Cancelado:</label>
+                                <select name="cancelado" id="cancelado"
+                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
+                                    <option value="">Selecciona</option>
+                                    <option value="MATRICULA">MATRICULA</option>
+                                    <option value="MENSUALIDAD">MENSUALIDAD</option>
+                                    <option value="SEGURO ESCOLAR">SEGURO ESCOLAR</option>
+                                </select>
                             </div>
                             <!-- CAMPOS DE PAGO ORIGINALES -->
                             <div>
@@ -577,8 +567,8 @@
                     edadWarning.classList.remove('hidden');
                     if (!firstInvalidField) firstInvalidField = fNacEstInput;
                 } else {
-                    fNacEstInput.classList.add('hidden');
                     fNacEstInput.classList.remove('invalid');
+                    edadWarning.classList.add('hidden');
                 }
             }
 
