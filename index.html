@@ -341,16 +341,26 @@
                                 <label for="referencia" class="block text-sm font-medium text-gray-700">Referencia:</label>
                                 <input type="text" name="referencia" id="referencia" inputmode="numeric" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
-                            <!-- CAMPO CANCELADO -->
+                            <!-- CAMPO CANCELADO - AHORA CON CHECKBOXES -->
                             <div class="md:col-span-2">
-                                <label for="cancelado" class="block text-sm font-medium text-gray-700">Cancelado:</label>
-                                <select name="cancelado" id="cancelado"
-                                        class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200">
-                                    <option value="">Selecciona</option>
-                                    <option value="MATRICULA">MATRICULA</option>
-                                    <option value="MENSUALIDAD">MENSUALIDAD</option>
-                                    <option value="SEGURO ESCOLAR">SEGURO ESCOLAR</option>
-                                </select>
+                                <label class="block text-sm font-medium text-gray-700">Cancelado:</label>
+                                <div class="mt-1 space-y-2">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" name="canceladoMatricula" id="canceladoMatricula" value="SI"
+                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <label for="canceladoMatricula" class="ml-2 block text-sm font-medium text-gray-800">MATRICULA</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" name="canceladoMensualidad" id="canceladoMensualidad" value="SI"
+                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <label for="canceladoMensualidad" class="ml-2 block text-sm font-medium text-gray-800">MENSUALIDAD</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" name="canceladoSeguroEscolar" id="canceladoSeguroEscolar" value="SI"
+                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
+                                        <label for="canceladoSeguroEscolar" class="ml-2 block text-sm font-medium text-gray-800">SEGURO ESCOLAR</label>
+                                    </div>
+                                </div>
                             </div>
                             <!-- CAMPOS DE PAGO ORIGINALES -->
                             <div>
