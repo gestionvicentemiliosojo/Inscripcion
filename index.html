@@ -38,6 +38,39 @@
         .modal-content {
             transition: transform 0.3s ease-in-out;
         }
+        .custom-select-container {
+            position: relative;
+        }
+        .custom-select-button {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            color: #4a5568;
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            cursor: pointer;
+            user-select: none;
+        }
+        .custom-select-options {
+            display: none;
+            position: absolute;
+            z-index: 10;
+            width: 100%;
+            margin-top: 0.25rem;
+            overflow: auto;
+            background-color: #fff;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.375rem;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+        .custom-select-options.show {
+            display: block;
+        }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
@@ -341,25 +374,39 @@
                                 <label for="referencia" class="block text-sm font-medium text-gray-700">Referencia:</label>
                                 <input type="text" name="referencia" id="referencia" inputmode="numeric" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
                             </div>
-                            <!-- CAMPO CANCELADO - AHORA CON CHECKBOXES -->
+                            <!-- CAMPO CANCELADO PERSONALIZADO -->
                             <div class="md:col-span-2">
-                                <label class="block text-sm font-medium text-gray-700">Cancelado:</label>
-                                <div class="mt-1 space-y-2">
-                                    <div class="flex items-center">
-                                        <input type="checkbox" name="canceladoMatricula" id="canceladoMatricula" value="MATRICULA"
-                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                        <label for="canceladoMatricula" class="ml-2 block text-sm font-medium text-gray-800">MATRICULA</label>
+                                <label for="cancelado" class="block text-sm font-medium text-gray-700">Cancelado:</label>
+                                <div class="relative mt-1">
+                                    <div id="cancelado-button" class="flex items-center justify-between w-full px-3 py-2 text-left bg-white border border-gray-300 rounded-md shadow-sm cursor-pointer focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <span class="block truncate">Selecciona</span>
+                                        <svg class="w-5 h-5 ml-2 -mr-1 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M10 3a.75.75 0 01.53.22l3.5 3.5a.75.75 0 01-1.06 1.06L10 4.81 7.03 7.78a.75.75 0 01-1.06-1.06l3.5-3.5A.75.75 0 0110 3zm-3.72 9.53a.75.75 0 011.06 0L10 15.19l2.97-2.97a.75.75 0 111.06 1.06l-3.5 3.5a.75.75 0 01-1.06 0l-3.5-3.5a.75.75 0 010-1.06z" clip-rule="evenodd" />
+                                        </svg>
                                     </div>
-                                    <div class="flex items-center">
-                                        <input type="checkbox" name="canceladoMensualidad" id="canceladoMensualidad" value="MENSUALIDAD"
-                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                        <label for="canceladoMensualidad" class="ml-2 block text-sm font-medium text-gray-800">MENSUALIDAD</label>
+                                    <div id="cancelado-options" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg hidden">
+                                        <ul class="py-1 overflow-auto text-base leading-6 rounded-md shadow-xs max-h-60 focus:outline-none sm:text-sm sm:leading-5">
+                                            <li class="px-3 py-2">
+                                                <label class="flex items-center space-x-3">
+                                                    <input type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="MATRICULA">
+                                                    <span class="font-normal text-gray-700">MATRICULA</span>
+                                                </label>
+                                            </li>
+                                            <li class="px-3 py-2">
+                                                <label class="flex items-center space-x-3">
+                                                    <input type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="MENSUALIDAD">
+                                                    <span class="font-normal text-gray-700">MENSUALIDAD</span>
+                                                </label>
+                                            </li>
+                                            <li class="px-3 py-2">
+                                                <label class="flex items-center space-x-3">
+                                                    <input type="checkbox" class="w-4 h-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500" value="SEGURO ESCOLAR">
+                                                    <span class="font-normal text-gray-700">SEGURO ESCOLAR</span>
+                                                </label>
+                                            </li>
+                                        </ul>
                                     </div>
-                                    <div class="flex items-center">
-                                        <input type="checkbox" name="canceladoSeguroEscolar" id="canceladoSeguroEscolar" value="SEGURO ESCOLAR"
-                                               class="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500">
-                                        <label for="canceladoSeguroEscolar" class="ml-2 block text-sm font-medium text-gray-800">SEGURO ESCOLAR</label>
-                                    </div>
+                                    <input type="hidden" name="cancelado" id="cancelado">
                                 </div>
                             </div>
                             <!-- CAMPOS DE PAGO ORIGINALES -->
@@ -843,7 +890,45 @@
 
         updateVisibleSteps();
         showCurrentStep();
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const cancelButton = document.getElementById('cancelado-button');
+            const cancelOptions = document.getElementById('cancelado-options');
+            const canceladoInput = document.getElementById('cancelado');
+            const cancelCheckboxes = cancelOptions.querySelectorAll('input[type="checkbox"]');
+            const cancelButtonText = cancelButton.querySelector('span');
+
+            cancelButton.addEventListener('click', () => {
+                cancelOptions.classList.toggle('hidden');
+            });
+
+            const updateCanceladoValue = () => {
+                const selectedValues = [];
+                const selectedLabels = [];
+                cancelCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedValues.push(checkbox.value);
+                        selectedLabels.push(checkbox.nextElementSibling.textContent);
+                    }
+                });
+                canceladoInput.value = selectedValues.join(', ');
+                if (selectedLabels.length > 0) {
+                    cancelButtonText.textContent = selectedLabels.join(', ');
+                } else {
+                    cancelButtonText.textContent = 'Selecciona';
+                }
+            };
+
+            cancelCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', updateCanceladoValue);
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!cancelButton.contains(event.target) && !cancelOptions.contains(event.target)) {
+                    cancelOptions.classList.add('hidden');
+                }
+            });
+        });
     </script>
 </body>
 </html>
-
