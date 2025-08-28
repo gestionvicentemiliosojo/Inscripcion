@@ -76,10 +76,13 @@
 <body class="bg-gray-100 min-h-screen flex items-center justify-center p-4">
     <div class="bg-white p-8 sm:p-12 rounded-2xl shadow-2xl border border-gray-200 max-w-3xl w-full">
         
-        <div class="text-center mb-8">
-            <h1 class="text-3xl sm:text-4xl font-bold text-gray-800 tracking-tight">
-                Ficha de Inscripción Estudiantil
-            </h1>
+        <div class="flex flex-col items-center mb-8">
+             <img src="logo.png" alt="Logo de la U.E.C. Vicente Emilio Sojo" class="w-24 h-24 mb-4">
+            <h2 class="text-2xl font-extrabold text-indigo-700 text-center">U.E.C. "VICENTE EMILIO SOJO"</h2>
+            <h3 class="text-xl font-bold text-gray-600 text-center">MINISTERIO DEL PODER POPULAR PARA LA EDUCACIÓN</h3>
+            <!-- <h3 class="text-xl font-bold text-gray-600 text-center">CÓDIGO PD00511808</h3> -->
+	    <h3 class="text-xl font-bold text-gray-600 text-center">ACARIGUA EDO-PORTUGUESA</h3>
+            <h1 class="text-3xl font-extrabold text-indigo-700 mt-2 text-center">FICHA DE INSCRIPCIÓN</h1>
             <p class="text-base text-gray-500 mt-2" id="form-description">
                 Por favor, completa los datos del estudiante.
             </p>
@@ -194,12 +197,14 @@
                                 <input type="text" name="actInt" id="actInt" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" maxlength="100">
                             </div>
                             <div class="md:col-span-2 flex items-center space-x-4">
-                                <label class="block text-sm font-medium text-gray-700">Tiene hermanos en el plantel:</label>
-                                <select name="tieneHerm" id="tieneHerm" class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option value="" selected disabled>Selecciona</option><option value="No">No</option><option value="Sí">Sí</option>
-                                </select>
-                            </div>
-                            <div id="hermanoInfo" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-2 hidden">
+    				<label class="block text-sm font-medium text-gray-700">Tiene hermanos en el plantel: <span class="text-red-500">*</span></label>
+    				<select name="tieneHerm" id="tieneHerm" data-required="true" class="mt-1 block px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+        			<option value="" selected></option>
+        			<option value="No">No</option>
+        			<option value="Sí">Sí</option>
+    				</select>
+				</div>
+                            	<div id="hermanoInfo" class="grid grid-cols-1 md:grid-cols-2 gap-4 md:col-span-2 hidden">
                                 <div>
                                     <label for="nomHerm" class="block text-sm font-medium text-gray-700">Nombre Hermano:</label>
                                     <input type="text" name="nomHerm" id="nomHerm" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500" maxlength="100">
@@ -515,451 +520,457 @@
     </div>
 
     <script>
-        const studentForm = document.getElementById('studentForm');
-        const formStatus = document.getElementById('formStatus');
-        const documentLink = document.getElementById('documentLink'); 
-        const documentLinkAnchor = document.querySelector('#documentLink a'); 
-        const formDescription = document.getElementById('form-description');
-        const progressBar = document.getElementById('progressBar');
+    const studentForm = document.getElementById('studentForm');
+    const formStatus = document.getElementById('formStatus');
+    const documentLink = document.getElementById('documentLink');
+    const documentLinkAnchor = document.querySelector('#documentLink a');
+    const formDescription = document.getElementById('form-description');
+    const progressBar = document.getElementById('progressBar');
 
-        const formSteps = document.querySelectorAll('.form-step');
-        let currentStepIndex = 0;
-        let visibleSteps = [];
+    const formSteps = document.querySelectorAll('.form-step');
+    let currentStepIndex = 0;
+    let visibleSteps = [];
 
-        const prevStepBtn = document.getElementById('prevStepBtn');
-        const nextStepBtn = document.getElementById('nextStepBtn');
-        const submitFormBtn = document.getElementById('submitForm');
+    const prevStepBtn = document.getElementById('prevStepBtn');
+    const nextStepBtn = document.getElementById('nextStepBtn');
+    const submitFormBtn = document.getElementById('submitForm');
 
-        const enableMadreCheckbox = document.getElementById('enableMadre');
-        const enablePadreCheckbox = document.getElementById('enablePadre');
+    const enableMadreCheckbox = document.getElementById('enableMadre');
+    const enablePadreCheckbox = document.getElementById('enablePadre');
 
-        const confirmationModal = document.getElementById('confirmationModal');
-        const closeModalBtn = document.getElementById('closeModalBtn');
+    const confirmationModal = document.getElementById('confirmationModal');
+    const closeModalBtn = document.getElementById('closeModalBtn');
 
-        const stepDescriptions = {
-            'step1': "Por favor, completa los datos del estudiante y selecciona las secciones opcionales.",
-            'step2': "Ahora, ingresa los datos de la madre.",
-            'step3': "A continuación, ingresa los datos del padre.",
-            'step4': "Finalmente, completa los datos del representante en el colegio."
-        };
+    const stepDescriptions = {
+        'step1': "Por favor, completa los datos del estudiante y selecciona las secciones opcionales.",
+        'step2': "Ahora, ingresa los datos de la madre.",
+        'step3': "A continuación, ingresa los datos del padre.",
+        'step4': "Finalmente, completa los datos del representante en el colegio."
+    };
 
-        function updateVisibleSteps() {
-            visibleSteps = ['step1'];
-            if (enableMadreCheckbox.checked) {
-                visibleSteps.push('step2');
-            }
-            if (enablePadreCheckbox.checked) {
-                visibleSteps.push('step3');
-            }
-            if (document.getElementById('step4')) { 
-                visibleSteps.push('step4');
-            }
-            if (currentStepIndex >= visibleSteps.length) {
-                currentStepIndex = visibleSteps.length - 1;
-            }
-            showCurrentStep();
-            updateProgressBar();
+    function updateVisibleSteps() {
+        visibleSteps = ['step1'];
+        if (enableMadreCheckbox.checked) {
+            visibleSteps.push('step2');
+        }
+        if (enablePadreCheckbox.checked) {
+            visibleSteps.push('step3');
+        }
+        if (document.getElementById('step4')) {
+            visibleSteps.push('step4');
+        }
+        if (currentStepIndex >= visibleSteps.length) {
+            currentStepIndex = visibleSteps.length - 1;
+        }
+        showCurrentStep();
+        updateProgressBar();
+    }
+
+    function updateProgressBar() {
+        const progress = ((currentStepIndex + 1) / visibleSteps.length) * 100;
+        progressBar.style.width = `${progress}%`;
+    }
+
+    function showCurrentStep() {
+        formSteps.forEach(step => step.classList.remove('active'));
+        const currentStepId = visibleSteps[currentStepIndex];
+        document.getElementById(currentStepId).classList.add('active');
+
+        formDescription.textContent = stepDescriptions[currentStepId];
+
+        if (currentStepIndex === 0) {
+            prevStepBtn.classList.add('hidden');
+        } else {
+            prevStepBtn.classList.remove('hidden');
         }
 
-        function updateProgressBar() {
-            const progress = ((currentStepIndex + 1) / visibleSteps.length) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-
-        function showCurrentStep() {
-            formSteps.forEach(step => step.classList.remove('active'));
-            const currentStepId = visibleSteps[currentStepIndex];
-            document.getElementById(currentStepId).classList.add('active');
-
-            formDescription.textContent = stepDescriptions[currentStepId];
-
-            if (currentStepIndex === 0) {
-                prevStepBtn.classList.add('hidden');
-            } else {
-                prevStepBtn.classList.remove('hidden');
-            }
-
-            if (currentStepIndex === visibleSteps.length - 1) {
-                nextStepBtn.classList.add('hidden');
-                submitFormBtn.classList.remove('hidden');
-                formStatus.classList.add('hidden');
-            } else {
-                nextStepBtn.classList.remove('hidden');
-                submitFormBtn.classList.add('hidden');
-            }
-            updateProgressBar();
-        }
-
-        function validateCurrentStep() {
-            let isValid = true;
-            let firstInvalidField = null;
-
+        if (currentStepIndex === visibleSteps.length - 1) {
+            nextStepBtn.classList.add('hidden');
+            submitFormBtn.classList.remove('hidden');
             formStatus.classList.add('hidden');
-            formStatus.classList.remove('text-red-600');
-
-            const currentStepDiv = document.querySelector('.form-step.active');
-            const requiredFields = currentStepDiv.querySelectorAll('[data-required="true"]');
-
-            requiredFields.forEach(field => {
-                field.classList.remove('invalid');
-                let fieldValue = field.value.trim();
-
-                if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fieldValue)) {
-                    isValid = false;
-                    field.classList.add('invalid');
-                    if (!firstInvalidField) firstInvalidField = field;
-                } else if (!fieldValue) {
-                    isValid = false;
-                    field.classList.add('invalid');
-                    if (!firstInvalidField) firstInvalidField = field;
-                }
-            });
-
-            const fNacEstInput = document.getElementById('fNacEst');
-            const edadEstInput = document.getElementById('edadEst');
-            const edadWarning = document.getElementById('edadWarning');
-
-            if (fNacEstInput && fNacEstInput.closest('.form-step.active')) {
-                const currentAge = parseInt(edadEstInput.value, 10);
-                if (isNaN(currentAge) || currentAge < 10 || currentAge > 18) {
-                    isValid = false;
-                    fNacEstInput.classList.add('invalid');
-                    edadWarning.textContent = 'La edad debe estar entre 10 y 18 años.';
-                    edadWarning.classList.remove('hidden');
-                    if (!firstInvalidField) firstInvalidField = fNacEstInput;
-                } else {
-                    fNacEstInput.classList.remove('invalid');
-                    edadWarning.classList.add('hidden');
-                }
-            }
-
-
-            if (!isValid) {
-                formStatus.textContent = 'Por favor, rellena todos los campos obligatorios marcados y corrige los errores.';
-                formStatus.classList.remove('hidden');
-                formStatus.classList.add('text-red-600');
-                if (firstInvalidField) {
-                    firstInvalidField.focus();
-                }
-            }
-            return isValid;
+        } else {
+            nextStepBtn.classList.remove('hidden');
+            submitFormBtn.classList.add('hidden');
         }
+        updateProgressBar();
+    }
 
+    function validateCurrentStep() {
+        let isValid = true;
+        let firstInvalidField = null;
 
-        nextStepBtn.addEventListener('click', () => {
-            if (validateCurrentStep()) {
-                if (currentStepIndex < visibleSteps.length - 1) {
-                    currentStepIndex++;
-                    showCurrentStep();
-                }
+        formStatus.classList.add('hidden');
+        formStatus.classList.remove('text-red-600');
+
+        const currentStepDiv = document.querySelector('.form-step.active');
+        const requiredFields = currentStepDiv.querySelectorAll('[data-required="true"]');
+
+        requiredFields.forEach(field => {
+            field.classList.remove('invalid');
+            let fieldValue = field.value.trim();
+
+            if (field.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fieldValue)) {
+                isValid = false;
+                field.classList.add('invalid');
+                if (!firstInvalidField) firstInvalidField = field;
+            } else if (!fieldValue) {
+                isValid = false;
+                field.classList.add('invalid');
+                if (!firstInvalidField) firstInvalidField = field;
             }
         });
-
-        prevStepBtn.addEventListener('click', () => {
-            if (currentStepIndex > 0) {
-                currentStepIndex--;
-                showCurrentStep();
-            }
-        });
-
-        enableMadreCheckbox.addEventListener('change', updateVisibleSteps);
-        enablePadreCheckbox.addEventListener('change', updateVisibleSteps);
-
-        const tieneHermSelect = document.getElementById('tieneHerm');
-        const hermanoInfo = document.getElementById('hermanoInfo');
-
-        function toggleHermanoInfo() {
-            if (tieneHermSelect.value === 'Sí') {
-                hermanoInfo.classList.remove('hidden');
-            } else {
-                hermanoInfo.classList.add('hidden');
-                document.getElementById('nomHerm').value = '';
-                document.getElementById('anoHerm').value = '';
-            }
-        }
-
-        tieneHermSelect.addEventListener('change', toggleHermanoInfo);
-        toggleHermanoInfo();
-
-        function populateAnoCursar() {
-            const selectElement = document.getElementById('ano_cursar');
-            const currentYear = new Date().getFullYear();
-            selectElement.innerHTML = '';
-            const defaultOption = document.createElement('option');
-            defaultOption.value = "";
-            defaultOption.textContent = "Selecciona un año";
-            selectElement.appendChild(defaultOption);
-
-            for (let i = 0; i < 10; i++) {
-                const startYear = currentYear + i;
-                const endYear = startYear + 1;
-                const option = document.createElement('option');
-                option.value = `${startYear}-${endYear}`;
-                option.textContent = `${startYear}-${endYear}`;
-                selectElement.appendChild(option);
-            }
-        }
-        populateAnoCursar();
-
-        function populateEstatura() {
-            const selectElement = document.getElementById('estatura');
-            selectElement.innerHTML = '<option value="">Selecciona</option>';
-            for (let i = 100; i <= 200; i += 5) {
-                const option = document.createElement('option');
-                option.value = i;
-                option.textContent = `${i} cm`;
-                selectElement.appendChild(option);
-            }
-        }
-        populateEstatura();
 
         const fNacEstInput = document.getElementById('fNacEst');
         const edadEstInput = document.getElementById('edadEst');
         const edadWarning = document.getElementById('edadWarning');
 
-        fNacEstInput.addEventListener('change', () => {
-            const birthDateStr = fNacEstInput.value;
-            if (!birthDateStr) {
-                edadEstInput.value = '';
-                edadWarning.classList.add('hidden');
-                fNacEstInput.classList.remove('invalid');
-                return;
-            }
-
-            const birthDate = new Date(birthDateStr);
-            if (isNaN(birthDate.getTime())) {
-                edadEstInput.value = '';
-                edadWarning.textContent = 'Fecha inválida.';
-                edadWarning.classList.remove('hidden');
+        if (fNacEstInput && fNacEstInput.closest('.form-step.active')) {
+            const currentAge = parseInt(edadEstInput.value, 10);
+            if (isNaN(currentAge) || currentAge < 10 || currentAge > 18) {
+                isValid = false;
                 fNacEstInput.classList.add('invalid');
-                return;
-            }
-
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-
-            edadEstInput.value = age >= 0 ? age : '';
-
-            if (age < 10 || age > 18) {
                 edadWarning.textContent = 'La edad debe estar entre 10 y 18 años.';
                 edadWarning.classList.remove('hidden');
-                fNacEstInput.classList.add('invalid');
+                if (!firstInvalidField) firstInvalidField = fNacEstInput;
             } else {
-                edadWarning.classList.add('hidden');
                 fNacEstInput.classList.remove('invalid');
+                edadWarning.classList.add('hidden');
+            }
+        }
+
+
+        if (!isValid) {
+            formStatus.textContent = 'Por favor, rellena todos los campos obligatorios marcados y corrige los errores.';
+            formStatus.classList.remove('hidden');
+            formStatus.classList.add('text-red-600');
+            if (firstInvalidField) {
+                firstInvalidField.focus();
+            }
+        }
+        return isValid;
+    }
+
+
+    nextStepBtn.addEventListener('click', () => {
+        if (validateCurrentStep()) {
+            if (currentStepIndex < visibleSteps.length - 1) {
+                currentStepIndex++;
+                showCurrentStep();
+            }
+        }
+    });
+
+    prevStepBtn.addEventListener('click', () => {
+        if (currentStepIndex > 0) {
+            currentStepIndex--;
+            showCurrentStep();
+        }
+    });
+
+    enableMadreCheckbox.addEventListener('change', updateVisibleSteps);
+    enablePadreCheckbox.addEventListener('change', updateVisibleSteps);
+
+    const tieneHermSelect = document.getElementById('tieneHerm');
+    const hermanoInfo = document.getElementById('hermanoInfo');
+
+    function toggleHermanoInfo() {
+        if (tieneHermSelect.value === 'Sí') {
+            hermanoInfo.classList.remove('hidden');
+        } else {
+            hermanoInfo.classList.add('hidden');
+            document.getElementById('nomHerm').value = '';
+            document.getElementById('anoHerm').value = '';
+        }
+    }
+
+    tieneHermSelect.addEventListener('change', toggleHermanoInfo);
+    toggleHermanoInfo();
+
+    function populateAnoCursar() {
+        const selectElement = document.getElementById('ano_cursar');
+        const currentYear = new Date().getFullYear();
+        selectElement.innerHTML = '';
+        const defaultOption = document.createElement('option');
+        defaultOption.value = "";
+        defaultOption.textContent = "Selecciona un año";
+        selectElement.appendChild(defaultOption);
+
+        for (let i = 0; i < 10; i++) {
+            const startYear = currentYear + i;
+            const endYear = startYear + 1;
+            const option = document.createElement('option');
+            option.value = `${startYear}-${endYear}`;
+            option.textContent = `${startYear}-${endYear}`;
+            selectElement.appendChild(option);
+        }
+    }
+    populateAnoCursar();
+
+    function populateEstatura() {
+        const selectElement = document.getElementById('estatura');
+        selectElement.innerHTML = '<option value="">Selecciona</option>';
+        for (let i = 100; i <= 200; i += 5) {
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `${i} cm`;
+            selectElement.appendChild(option);
+        }
+    }
+    populateEstatura();
+
+    const fNacEstInput = document.getElementById('fNacEst');
+    const edadEstInput = document.getElementById('edadEst');
+    const edadWarning = document.getElementById('edadWarning');
+
+    fNacEstInput.addEventListener('change', () => {
+        const birthDateStr = fNacEstInput.value;
+        if (!birthDateStr) {
+            edadEstInput.value = '';
+            edadWarning.classList.add('hidden');
+            fNacEstInput.classList.remove('invalid');
+            return;
+        }
+
+        const birthDate = new Date(birthDateStr);
+        if (isNaN(birthDate.getTime())) {
+            edadEstInput.value = '';
+            edadWarning.textContent = 'Fecha inválida.';
+            edadWarning.classList.remove('hidden');
+            fNacEstInput.classList.add('invalid');
+            return;
+        }
+
+        const today = new Date();
+        let age = today.getFullYear() - birthDate.getFullYear();
+        const monthDiff = today.getMonth() - birthDate.getMonth();
+        if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+
+        edadEstInput.value = age >= 0 ? age : '';
+
+        if (age < 10 || age > 18) {
+            edadWarning.textContent = 'La edad debe estar entre 10 y 18 años.';
+            edadWarning.classList.remove('hidden');
+            fNacEstInput.classList.add('invalid');
+        } else {
+            edadWarning.classList.add('hidden');
+            fNacEstInput.classList.remove('invalid');
+        }
+    });
+
+    // Function to convert input value to uppercase
+    function convertToUppercase(event) {
+        this.value = this.value.toUpperCase();
+        // Remove invalid class on input if it's now valid
+        if (this.value.trim() !== '') {
+            this.classList.remove('invalid');
+        }
+    }
+
+    // Functions for specific input restrictions (kept for consistency with previous versions)
+    function restrictToNumbers(event) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value.trim() !== '') {
+            this.classList.remove('invalid');
+        }
+    }
+
+    function restrictToLetters(event) {
+        this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
+        if (this.value.trim() !== '') {
+            this.classList.remove('invalid');
+        }
+    }
+
+    function restrictToAlphanumericSpecial(event) {
+        this.value = this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,-]/g, '');
+        if (this.value.trim() !== '') {
+            this.classList.remove('invalid');
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Add uppercase conversion to all relevant text inputs and textareas
+        document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea').forEach(field => {
+            // Exclude date and number inputs as they don't handle text like others
+            if (field.type !== 'date' && field.type !== 'number') {
+                field.addEventListener('input', convertToUppercase);
             }
         });
 
-        // Function to convert input value to uppercase
-        function convertToUppercase(event) {
-            this.value = this.value.toUpperCase();
-            // Remove invalid class on input if it's now valid
-            if (this.value.trim() !== '') {
-                this.classList.remove('invalid');
-            }
-        }
-
-        // Functions for specific input restrictions (kept for consistency with previous versions)
-        function restrictToNumbers(event) {
-            this.value = this.value.replace(/[^0-9]/g, '');
-            if (this.value.trim() !== '') {
-                this.classList.remove('invalid');
-            }
-        }
-
-        function restrictToLetters(event) {
-            this.value = this.value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/g, '');
-            if (this.value.trim() !== '') {
-                this.classList.remove('invalid');
-            }
-        }
-
-        function restrictToAlphanumericSpecial(event) {
-            this.value = this.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑüÜ\s.,-]/g, '');
-            if (this.value.trim() !== '') {
-                this.classList.remove('invalid');
-            }
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            // Add uppercase conversion to all relevant text inputs and textareas
-            document.querySelectorAll('input[type="text"], input[type="email"], input[type="tel"], textarea').forEach(field => {
-                // Exclude date and number inputs as they don't handle text like others
-                if (field.type !== 'date' && field.type !== 'number') {
-                    field.addEventListener('input', convertToUppercase);
+        // Prevent line breaks in text, tel, and email inputs
+        document.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"]').forEach(field => {
+            field.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
                 }
             });
-
-            // Prevent line breaks in text, tel, and email inputs
-            document.querySelectorAll('input[type="text"], input[type="tel"], input[type="email"]').forEach(field => {
-                field.addEventListener('keydown', (event) => {
-                    if (event.key === 'Enter') {
-                        event.preventDefault();
-                    }
-                });
-            });
-
-            // Specific input restrictions (from previous code)
-            document.getElementById('ciEst').addEventListener('input', restrictToNumbers);
-            document.getElementById('ciMad').addEventListener('input', restrictToNumbers);
-            document.getElementById('ciPad').addEventListener('input', restrictToNumbers);
-            document.getElementById('ciRep').addEventListener('input', restrictToNumbers);
-            document.getElementById('telHabMad').addEventListener('input', restrictToNumbers);
-            document.getElementById('celMad').addEventListener('input', restrictToNumbers);
-            document.getElementById('telHabPad').addEventListener('input', restrictToNumbers);
-            document.getElementById('celPad').addEventListener('input', restrictToNumbers);
-            document.getElementById('telHabRep').addEventListener('input', restrictToNumbers);
-            document.getElementById('celRep').addEventListener('input', restrictToNumbers);
-            document.getElementById('contEmerg').addEventListener('input', restrictToNumbers);
-            document.getElementById('referencia').addEventListener('input', restrictToNumbers);
-            document.getElementById('montoPago').addEventListener('input', restrictToNumbers);
-            // Note: nomEst, apeEst, lugNacEst etc. already have the uppercase conversion via the general selector above.
-            // These specific restrictToLetters/AlphanumericSpecial will still apply their character filtering.
-            document.getElementById('plantelProc').addEventListener('input', restrictToAlphanumericSpecial);
-            document.getElementById('enfDisc').addEventListener('input', restrictToAlphanumericSpecial);
-            document.getElementById('actInt').addEventListener('input', restrictToAlphanumericSpecial);
-            document.getElementById('trabMad').addEventListener('input', restrictToAlphanumericSpecial);
-            document.getElementById('trabPad').addEventListener('input', restrictToAlphanumericSpecial);
-            document.getElementById('trabRep').addEventListener('input', restrictToAlphanumericSpecial);
         });
 
-        const fotoEstInput = document.getElementById('fotoEst');
-        const fotoEstBase64Input = document.getElementById('fotoEstBase64');
-        const imagePreview = document.getElementById('imagePreview');
+        // Deshabilitar "Enter" en todos los campos de texto de área
+        document.querySelectorAll('textarea').forEach(textarea => {
+            textarea.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                }
+            });
+        });
 
-        fotoEstInput.addEventListener('change', function() {
-            const file = this.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.classList.remove('hidden');
-                    fotoEstBase64Input.value = e.target.result;
-                };
-                reader.readAsDataURL(file);
+        // Specific input restrictions (from previous code)
+        document.getElementById('ciEst').addEventListener('input', restrictToNumbers);
+        document.getElementById('ciMad').addEventListener('input', restrictToNumbers);
+        document.getElementById('ciPad').addEventListener('input', restrictToNumbers);
+        document.getElementById('ciRep').addEventListener('input', restrictToNumbers);
+        document.getElementById('telHabMad').addEventListener('input', restrictToNumbers);
+        document.getElementById('celMad').addEventListener('input', restrictToNumbers);
+        document.getElementById('telHabPad').addEventListener('input', restrictToNumbers);
+        document.getElementById('celPad').addEventListener('input', restrictToNumbers);
+        document.getElementById('telHabRep').addEventListener('input', restrictToNumbers);
+        document.getElementById('celRep').addEventListener('input', restrictToNumbers);
+        document.getElementById('contEmerg').addEventListener('input', restrictToNumbers);
+        document.getElementById('referencia').addEventListener('input', restrictToNumbers);
+        document.getElementById('montoPago').addEventListener('input', restrictToNumbers);
+        // Note: nomEst, apeEst, lugNacEst etc. already have the uppercase conversion via the general selector above.
+        // These specific restrictToLetters/AlphanumericSpecial will still apply their character filtering.
+        document.getElementById('plantelProc').addEventListener('input', restrictToAlphanumericSpecial);
+        document.getElementById('enfDisc').addEventListener('input', restrictToAlphanumericSpecial);
+        document.getElementById('actInt').addEventListener('input', restrictToAlphanumericSpecial);
+        document.getElementById('trabMad').addEventListener('input', restrictToAlphanumericSpecial);
+        document.getElementById('trabPad').addEventListener('input', restrictToAlphanumericSpecial);
+        document.getElementById('trabRep').addEventListener('input', restrictToAlphanumericSpecial);
+    });
+
+    const fotoEstInput = document.getElementById('fotoEst');
+    const fotoEstBase64Input = document.getElementById('fotoEstBase64');
+    const imagePreview = document.getElementById('imagePreview');
+
+    fotoEstInput.addEventListener('change', function() {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                imagePreview.src = e.target.result;
+                imagePreview.classList.remove('hidden');
+                fotoEstBase64Input.value = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else {
+            imagePreview.src = '';
+            imagePreview.classList.add('hidden');
+            fotoEstBase64Input.value = '';
+        }
+    });
+
+    studentForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        if (!validateCurrentStep()) {
+            return;
+        }
+
+        const buttonText = submitFormBtn.querySelector('.button-text');
+        const spinner = submitFormBtn.querySelector('.animate-spin');
+
+        buttonText.classList.add('hidden');
+        spinner.classList.remove('hidden');
+
+        formStatus.textContent = 'Generando ficha... Por favor, espera.';
+        formStatus.classList.remove('hidden', 'text-green-600', 'text-red-600');
+        formStatus.classList.add('text-gray-800');
+        submitFormBtn.disabled = true;
+        prevStepBtn.disabled = true;
+
+        try {
+            const response = await fetch(studentForm.action, {
+                method: 'POST',
+                body: new FormData(studentForm)
+            });
+
+            const data = await response.json();
+
+            if (data.result === 'success') {
+                confirmationModal.classList.remove('opacity-0', 'pointer-events-none');
+                confirmationModal.querySelector('.transform').classList.remove('scale-95');
             } else {
-                imagePreview.src = '';
-                imagePreview.classList.add('hidden');
-                fotoEstBase64Input.value = '';
-            }
-        });
-
-        studentForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
-
-            if (!validateCurrentStep()) {
-                return;
-            }
-
-            const buttonText = submitFormBtn.querySelector('.button-text');
-            const spinner = submitFormBtn.querySelector('.animate-spin');
-
-            buttonText.classList.add('hidden');
-            spinner.classList.remove('hidden');
-
-            formStatus.textContent = 'Generando ficha... Por favor, espera.';
-            formStatus.classList.remove('hidden', 'text-green-600', 'text-red-600');
-            formStatus.classList.add('text-gray-800');
-            submitFormBtn.disabled = true;
-            prevStepBtn.disabled = true;
-
-            try {
-                const response = await fetch(studentForm.action, {
-                    method: 'POST',
-                    body: new FormData(studentForm)
-                });
-
-                const data = await response.json();
-
-                if (data.result === 'success') {
-                    confirmationModal.classList.remove('opacity-0', 'pointer-events-none');
-                    confirmationModal.querySelector('.transform').classList.remove('scale-95');
-                } else {
-                    formStatus.textContent = `Error: ${data.error || 'Hubo un problema.'}`;
-                    formStatus.classList.add('text-red-600');
-                    submitFormBtn.disabled = false;
-                    prevStepBtn.disabled = false;
-                    buttonText.classList.remove('hidden');
-                    spinner.classList.add('hidden');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                formStatus.textContent = 'Error de conexión.';
+                formStatus.textContent = `Error: ${data.error || 'Hubo un problema.'}`;
                 formStatus.classList.add('text-red-600');
                 submitFormBtn.disabled = false;
                 prevStepBtn.disabled = false;
                 buttonText.classList.remove('hidden');
                 spinner.classList.add('hidden');
             }
-        });
-
-        closeModalBtn.addEventListener('click', () => {
-            confirmationModal.classList.add('opacity-0', 'pointer-events-none');
-            confirmationModal.querySelector('.transform').classList.add('scale-95');
-            studentForm.reset();
-            currentStepIndex = 0;
-            updateVisibleSteps();
-            showCurrentStep();
-            formStatus.classList.add('hidden');
-            imagePreview.src = '';
-            imagePreview.classList.add('hidden');
+        } catch (error) {
+            console.error('Error:', error);
+            formStatus.textContent = 'Error de conexión.';
+            formStatus.classList.add('text-red-600');
             submitFormBtn.disabled = false;
             prevStepBtn.disabled = false;
-
-            const buttonText = submitFormBtn.querySelector('.button-text');
-            const spinner = submitFormBtn.querySelector('.animate-spin');
             buttonText.classList.remove('hidden');
             spinner.classList.add('hidden');
-        });
+        }
+    });
 
+    closeModalBtn.addEventListener('click', () => {
+        confirmationModal.classList.add('opacity-0', 'pointer-events-none');
+        confirmationModal.querySelector('.transform').classList.add('scale-95');
+        studentForm.reset();
+        currentStepIndex = 0;
         updateVisibleSteps();
         showCurrentStep();
+        formStatus.classList.add('hidden');
+        imagePreview.src = '';
+        imagePreview.classList.add('hidden');
+        submitFormBtn.disabled = false;
+        prevStepBtn.disabled = false;
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const cancelButton = document.getElementById('cancelado-button');
-            const cancelOptions = document.getElementById('cancelado-options');
-            const canceladoInput = document.getElementById('cancelado');
-            const cancelCheckboxes = cancelOptions.querySelectorAll('input[type="checkbox"]');
-            const cancelButtonText = cancelButton.querySelector('span');
+        const buttonText = submitFormBtn.querySelector('.button-text');
+        const spinner = submitFormBtn.querySelector('.animate-spin');
+        buttonText.classList.remove('hidden');
+        spinner.classList.add('hidden');
+    });
 
-            cancelButton.addEventListener('click', () => {
-                cancelOptions.classList.toggle('hidden');
-            });
+    updateVisibleSteps();
+    showCurrentStep();
 
-            const updateCanceladoValue = () => {
-                const selectedValues = [];
-                const selectedLabels = [];
-                cancelCheckboxes.forEach(checkbox => {
-                    if (checkbox.checked) {
-                        selectedValues.push(checkbox.value);
-                        selectedLabels.push(checkbox.nextElementSibling.textContent);
-                    }
-                });
-                canceladoInput.value = selectedValues.join(', ');
-                if (selectedLabels.length > 0) {
-                    cancelButtonText.textContent = selectedLabels.join(', ');
-                } else {
-                    cancelButtonText.textContent = 'Selecciona';
-                }
-            };
+    document.addEventListener('DOMContentLoaded', () => {
+        const cancelButton = document.getElementById('cancelado-button');
+        const cancelOptions = document.getElementById('cancelado-options');
+        const canceladoInput = document.getElementById('cancelado');
+        const cancelCheckboxes = cancelOptions.querySelectorAll('input[type="checkbox"]');
+        const cancelButtonText = cancelButton.querySelector('span');
 
-            cancelCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', updateCanceladoValue);
-            });
-
-            document.addEventListener('click', (event) => {
-                if (!cancelButton.contains(event.target) && !cancelOptions.contains(event.target)) {
-                    cancelOptions.classList.add('hidden');
-                }
-            });
+        cancelButton.addEventListener('click', () => {
+            cancelOptions.classList.toggle('hidden');
         });
-    </script>
+
+        const updateCanceladoValue = () => {
+            const selectedValues = [];
+            const selectedLabels = [];
+            cancelCheckboxes.forEach(checkbox => {
+                if (checkbox.checked) {
+                    selectedValues.push(checkbox.value);
+                    selectedLabels.push(checkbox.nextElementSibling.textContent);
+                }
+            });
+            canceladoInput.value = selectedValues.join(', ');
+            if (selectedLabels.length > 0) {
+                cancelButtonText.textContent = selectedLabels.join(', ');
+            } else {
+                cancelButtonText.textContent = 'Selecciona';
+            }
+        };
+
+        cancelCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateCanceladoValue);
+        });
+
+        document.addEventListener('click', (event) => {
+            if (!cancelButton.contains(event.target) && !cancelOptions.contains(event.target)) {
+                cancelOptions.classList.add('hidden');
+            }
+        });
+    });
+</script>
 </body>
 </html>
-
-
-
