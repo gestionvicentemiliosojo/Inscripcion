@@ -1,0 +1,65 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+.form-step {
+    display: none;
+}
+.form-step.active {
+    display: block;
+    animation: fadeIn 0.5s ease-in-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+input.invalid, select.invalid, textarea.invalid {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.4) !important;
+}
+.progress-bar {
+    transition: width 0.4s ease-in-out;
+}
+.modal-overlay {
+    transition: opacity 0.3s ease-in-out;
+}
+.modal-content {
+    transition: transform 0.3s ease-in-out;
+}
+.custom-select-container {
+    position: relative;
+}
+.custom-select-button {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    color: #4a5568;
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    cursor: pointer;
+    user-select: none;
+}
+.custom-select-options {
+    display: none;
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    margin-top: 0.25rem;
+    overflow: auto;
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 0.375rem;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+.custom-select-options.show {
+    display: block;
+}
+.error-msg {
+    font-size: 0.75rem;
+    color: #ef4444;
+    margin-top: 0.25rem;
+}
