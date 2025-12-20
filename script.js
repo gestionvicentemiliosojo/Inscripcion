@@ -284,8 +284,14 @@ const UI = {
                 UI.elements.formStatus.classList.add('text-gray-800');
 
                 try {
-                    const url = `${CONFIG.SCRIPT_URL}?cedula=${cedula}`;
-                    const response = await fetch(url);
+                    const formData = new FormData();
+                    formData.append('action', 'search');
+                    formData.append('cedula', cedula);
+
+                    const response = await fetch(CONFIG.SCRIPT_URL, {
+                        method: 'POST',
+                        body: formData
+                    });
                     const result = await response.json();
 
                     if (result.result === 'found') {
