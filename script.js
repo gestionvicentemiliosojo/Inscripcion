@@ -274,6 +274,76 @@ const UI = {
     },
 
     setupEventListeners: () => {
+        // --- BÚSQUEDA DE ESTUDIANTE POR CÉDULA ---
+        const ciEstInput = document.getElementById('ciEst');
+        ciEstInput.addEventListener('blur', async () => {
+            const cedula = ciEstInput.value.trim();
+            if (Validator.esCedulaValida(cedula)) {
+                UI.elements.formStatus.textContent = 'Buscando datos del estudiante...';
+                UI.elements.formStatus.classList.remove('hidden', 'text-red-600', 'text-green-600');
+                UI.elements.formStatus.classList.add('text-gray-800');
+
+                try {
+                    const url = `${CONFIG.SCRIPT_URL}?cedula=${cedula}`;
+                    const response = await fetch(url);
+                    const result = await response.json();
+
+                    if (result.result === 'found') {
+                        UI.elements.formStatus.textContent = 'Datos del estudiante cargados.';
+                        UI.elements.formStatus.classList.add('text-green-600');
+                        
+                        const studentData = result.data;
+                        // Rellenar todos los campos del formulario
+                        for (const key in studentData) {
+                            const input = document.getElementById(key);
+                            if (input) {
+                                // Manejar checkboxes para opciones de madre/padre
+                                if (input.type === 'checkbox') {
+                                    input.checked = studentData[key] === 'Sí' || studentData[key] === true;
+                                } 
+                                // Manejar el dropdown personalizado 'cancelado'
+                                else if (key === 'cancelado') {
+                                    const values = studentData[key].split(',').map(s => s.trim());
+                                    const cancelCheckboxes = document.querySelectorAll('#cancelado-options input[type="checkbox"]');
+                                    cancelCheckboxes.forEach(cb => {
+                                        cb.checked = values.includes(cb.value);
+                                    });
+                                    // Actualizar el texto del botón (simulando la función original)
+                                    const labels = [];
+                                    document.querySelectorAll('#cancelado-options input:checked').forEach(cb => {
+                                        labels.push(cb.nextElementSibling.textContent);
+                                    });
+                                    document.querySelector('#cancelado-button span').textContent = labels.length > 0 ? labels.join(', ') : 'Selecciona';
+                                    input.value = studentData[key]; // Actualizar el hidden input
+                                }
+                                // Rellenar campos normales
+                                else {
+                                    input.value = studentData[key];
+                                }
+                            }
+                        }
+                        // Disparar eventos change para campos que tienen lógica asociada
+                        document.getElementById('fNacEst').dispatchEvent(new Event('change'));
+                        document.getElementById('tieneHerm').dispatchEvent(new Event('change'));
+                        UI.updateVisibleSteps();
+
+
+                    } else if (result.result === 'not_found') {
+                        UI.elements.formStatus.textContent = 'Estudiante no encontrado. Puede rellenar la ficha como nuevo ingreso.';
+                        UI.elements.formStatus.classList.add('text-gray-800');
+                    } else {
+                        throw new Error(result.error || 'Error desconocido al buscar estudiante.');
+                    }
+
+                } catch (error) {
+                    console.error("Error al buscar estudiante:", error);
+                    UI.elements.formStatus.textContent = 'No se pudo conectar para buscar los datos.';
+                    UI.elements.formStatus.classList.add('text-red-600');
+                }
+            }
+        });
+
+
         // Navegación
         UI.elements.nextBtn.addEventListener('click', () => {
             if (UI.validateCurrentStep()) {
