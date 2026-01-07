@@ -262,7 +262,7 @@ const UI = {
             e.target.value = e.target.value.toUpperCase();
         };
 
-        document.querySelectorAll('input[type="text"], textarea').forEach(el => {
+        document.querySelectorAll('input[type="text"], input[type="email"], textarea').forEach(el => {
             el.addEventListener('input', toUpper);
         });
 
@@ -270,6 +270,12 @@ const UI = {
         ['ciEst', 'ciMad', 'ciPad', 'ciRep', 'telHabMad', 'celMad', 'telHabPad', 'celPad', 'telHabRep', 'celRep', 'contEmerg', 'referencia', 'montoPago'].forEach(id => {
             const el = document.getElementById(id);
             if(el) el.addEventListener('input', restrictToNumbers);
+        });
+
+        // Campos que solo deben permitir letras
+        ['nomEst', 'apeEst', 'lugNacEst', 'plantelProc', 'enfDisc', 'actInt', 'nomHerm', 'nomMad', 'profMad', 'trabMad', 'cargoMad', 'nomPad', 'profPad', 'trabPad', 'cargoPad', 'nomRep', 'profRep', 'trabRep', 'cargoRep', 'parentesco', 'autRetirar'].forEach(id => {
+            const el = document.getElementById(id);
+            if(el) el.addEventListener('input', restrictToLetters);
         });
     },
 
@@ -338,12 +344,14 @@ const UI = {
                         UI.elements.formStatus.textContent = 'Estudiante no encontrado. Puede rellenar la ficha como nuevo ingreso.';
                         UI.elements.formStatus.classList.add('text-gray-800');
                     } else {
-                        throw new Error(result.error || 'Error desconocido al buscar estudiante.');
+                        console.log('Respuesta inesperada del backend:', result);
+                        throw new Error(result.error || 'Error desconocido. No se pudo detectar la versión del script.');
                     }
 
                 } catch (error) {
                     console.error("Error al buscar estudiante:", error);
-                    UI.elements.formStatus.textContent = 'No se pudo conectar para buscar los datos.';
+                    // El error ya tiene un mensaje detallado, así que lo mostramos directamente
+                    UI.elements.formStatus.textContent = error.message;
                     UI.elements.formStatus.classList.add('text-red-600');
                 }
             }
