@@ -87,6 +87,8 @@ const UI = {
         enableMadre: document.getElementById('enableMadre'),
         enablePadre: document.getElementById('enablePadre'),
         confirmationModal: document.getElementById('confirmationModal'),
+        optionsModal: document.getElementById('optionsModal'),
+        continueBtn: document.getElementById('continueBtn'),
         closeModalBtn: document.getElementById('closeModalBtn'),
         imagePreview: document.getElementById('imagePreview'),
         fotoEstBase64: document.getElementById('fotoEstBase64'),
@@ -110,10 +112,12 @@ const UI = {
     },
 
     init: () => {
-        UI.updateVisibleSteps();
         UI.setupEventListeners();
         UI.populateSelects();
         UI.setupInputRestrictions();
+        // Set initial checkbox label colors
+        UI.updateCheckboxLabelColor('enableMadre');
+        UI.updateCheckboxLabelColor('enablePadre');
     },
 
     updateVisibleSteps: () => {
@@ -157,6 +161,22 @@ const UI = {
         } else {
             UI.elements.nextBtn.classList.remove('hidden');
             UI.elements.submitBtn.classList.add('hidden');
+        }
+    },
+
+    updateCheckboxLabelColor: (checkboxId) => {
+        const checkbox = document.getElementById(checkboxId);
+        if (!checkbox) return;
+        const label = checkbox.nextElementSibling; // Assuming the label is the next sibling
+        if (!label) return;
+
+        // Remove existing color classes, including initial gray-800
+        label.classList.remove('text-green-600', 'text-red-600', 'text-gray-800');
+
+        if (checkbox.checked) {
+            label.classList.add('text-green-600');
+        } else {
+            label.classList.add('text-red-600');
         }
     },
 
@@ -280,6 +300,12 @@ const UI = {
     },
 
     setupEventListeners: () => {
+        // Modal de opciones
+        UI.elements.continueBtn.addEventListener('click', () => {
+            UI.elements.optionsModal.classList.add('hidden');
+            UI.updateVisibleSteps();
+        });
+
         // --- BÚSQUEDA DE ESTUDIANTE POR CÉDULA ---
         const ciEstInput = document.getElementById('ciEst');
         ciEstInput.addEventListener('blur', async () => {
@@ -376,8 +402,14 @@ const UI = {
         });
 
         // Checkboxes de padres
-        UI.elements.enableMadre.addEventListener('change', UI.updateVisibleSteps);
-        UI.elements.enablePadre.addEventListener('change', UI.updateVisibleSteps);
+        UI.elements.enableMadre.addEventListener('change', () => {
+            UI.updateVisibleSteps();
+            UI.updateCheckboxLabelColor('enableMadre');
+        });
+        UI.elements.enablePadre.addEventListener('change', () => {
+            UI.updateVisibleSteps();
+            UI.updateCheckboxLabelColor('enablePadre');
+        });
 
         // Hermanos
         UI.elements.tieneHermSelect.addEventListener('change', UI.toggleHermanoInfo);
