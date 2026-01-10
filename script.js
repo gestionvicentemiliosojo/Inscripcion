@@ -120,6 +120,79 @@ const UI = {
         UI.updateCheckboxLabelColor('enablePadre');
     },
 
+    async searchByCedula(cedula, searchType) {
+        if (Validator.esCedulaValida(cedula)) {
+            UI.elements.formStatus.textContent = `Buscando datos por C.I. (${searchType})...`;
+            UI.elements.formStatus.classList.remove('hidden', 'text-red-600', 'text-green-600');
+            UI.elements.formStatus.classList.add('text-gray-800');
+
+            try {
+                const formData = new FormData();
+                formData.append('action', 'search');
+                formData.append('cedula', cedula);
+                formData.append('searchType', searchType); // Add searchType
+
+                const response = await fetch(CONFIG.SCRIPT_URL, {
+                    method: 'POST',
+                    body: formData
+                });
+                const result = await response.json();
+
+                if (result.result === 'found') {
+                    UI.elements.formStatus.textContent = 'Datos encontrados y cargados en el formulario.';
+                    UI.elements.formStatus.classList.add('text-green-600');
+                    
+                    const studentData = result.data;
+                    // Rellenar todos los campos del formulario
+                    for (const key in studentData) {
+                        const input = document.getElementById(key);
+                        if (input) {
+                            if (input.type === 'checkbox') {
+                                input.checked = studentData[key] === 'Sí' || studentData[key] === true;
+                            } 
+                            else if (key === 'cancelado') {
+                                const values = studentData[key].split(',').map(s => s.trim());
+                                const cancelCheckboxes = document.querySelectorAll('#cancelado-options input[type="checkbox"]');
+                                cancelCheckboxes.forEach(cb => {
+                                    cb.checked = values.includes(cb.value);
+                                });
+                                const labels = [];
+                                document.querySelectorAll('#cancelado-options input:checked').forEach(cb => {
+                                    labels.push(cb.nextElementSibling.textContent);
+                                });
+                                document.querySelector('#cancelado-button span').textContent = labels.length > 0 ? labels.join(', ') : 'Selecciona';
+                                input.value = studentData[key];
+                            }
+                            else {
+                                input.value = studentData[key];
+                            }
+                        }
+                    }
+                    // Disparar eventos change para campos que tienen lógica asociada
+                    document.getElementById('fNacEst').dispatchEvent(new Event('change'));
+                    document.getElementById('tieneHerm').dispatchEvent(new Event('change'));
+                    UI.updateVisibleSteps();
+
+                    // Update checkbox label colors after populating data
+                    UI.updateCheckboxLabelColor('enableMadre');
+                    UI.updateCheckboxLabelColor('enablePadre');
+
+                } else if (result.result === 'not_found') {
+                    UI.elements.formStatus.textContent = 'No se encontraron datos para la C.I. proporcionada.';
+                    UI.elements.formStatus.classList.add('text-gray-800');
+                } else {
+                    console.log('Respuesta inesperada del backend:', result);
+                    throw new Error(result.error || 'Error desconocido.');
+                }
+
+            } catch (error) {
+                console.error("Error en la búsqueda:", error);
+                UI.elements.formStatus.textContent = error.message;
+                UI.elements.formStatus.classList.add('text-red-600');
+            }
+        }
+    },
+
     updateVisibleSteps: () => {
         UI.state.visibleSteps = ['step1'];
         if (UI.elements.enableMadre.checked) UI.state.visibleSteps.push('step2');
@@ -306,80 +379,14 @@ const UI = {
             UI.updateVisibleSteps();
         });
 
-        // --- BÚSQUEDA DE ESTUDIANTE POR CÉDULA ---
-        const ciEstInput = document.getElementById('ciEst');
-        ciEstInput.addEventListener('blur', async () => {
-            const cedula = ciEstInput.value.trim();
-            if (Validator.esCedulaValida(cedula)) {
-                UI.elements.formStatus.textContent = 'Buscando datos del estudiante...';
-                UI.elements.formStatus.classList.remove('hidden', 'text-red-600', 'text-green-600');
-                UI.elements.formStatus.classList.add('text-gray-800');
-
-                try {
-                    const formData = new FormData();
-                    formData.append('action', 'search');
-                    formData.append('cedula', cedula);
-
-                    const response = await fetch(CONFIG.SCRIPT_URL, {
-                        method: 'POST',
-                        body: formData
-                    });
-                    const result = await response.json();
-
-                    if (result.result === 'found') {
-                        UI.elements.formStatus.textContent = 'Datos del estudiante cargados.';
-                        UI.elements.formStatus.classList.add('text-green-600');
-                        
-                        const studentData = result.data;
-                        // Rellenar todos los campos del formulario
-                        for (const key in studentData) {
-                            const input = document.getElementById(key);
-                            if (input) {
-                                // Manejar checkboxes para opciones de madre/padre
-                                if (input.type === 'checkbox') {
-                                    input.checked = studentData[key] === 'Sí' || studentData[key] === true;
-                                } 
-                                // Manejar el dropdown personalizado 'cancelado'
-                                else if (key === 'cancelado') {
-                                    const values = studentData[key].split(',').map(s => s.trim());
-                                    const cancelCheckboxes = document.querySelectorAll('#cancelado-options input[type="checkbox"]');
-                                    cancelCheckboxes.forEach(cb => {
-                                        cb.checked = values.includes(cb.value);
-                                    });
-                                    // Actualizar el texto del botón (simulando la función original)
-                                    const labels = [];
-                                    document.querySelectorAll('#cancelado-options input:checked').forEach(cb => {
-                                        labels.push(cb.nextElementSibling.textContent);
-                                    });
-                                    document.querySelector('#cancelado-button span').textContent = labels.length > 0 ? labels.join(', ') : 'Selecciona';
-                                    input.value = studentData[key]; // Actualizar el hidden input
-                                }
-                                // Rellenar campos normales
-                                else {
-                                    input.value = studentData[key];
-                                }
-                            }
-                        }
-                        // Disparar eventos change para campos que tienen lógica asociada
-                        document.getElementById('fNacEst').dispatchEvent(new Event('change'));
-                        document.getElementById('tieneHerm').dispatchEvent(new Event('change'));
-                        UI.updateVisibleSteps();
-
-
-                    } else if (result.result === 'not_found') {
-                        UI.elements.formStatus.textContent = 'Estudiante no encontrado. Puede rellenar la ficha como nuevo ingreso.';
-                        UI.elements.formStatus.classList.add('text-gray-800');
-                    } else {
-                        console.log('Respuesta inesperada del backend:', result);
-                        throw new Error(result.error || 'Error desconocido. No se pudo detectar la versión del script.');
-                    }
-
-                } catch (error) {
-                    console.error("Error al buscar estudiante:", error);
-                    // El error ya tiene un mensaje detallado, así que lo mostramos directamente
-                    UI.elements.formStatus.textContent = error.message;
-                    UI.elements.formStatus.classList.add('text-red-600');
-                }
+        // Búsqueda por C.I.
+        ['ciEst', 'ciMad', 'ciPad', 'ciRep'].forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.addEventListener('blur', () => {
+                    const cedula = input.value.trim();
+                    UI.searchByCedula(cedula, id);
+                });
             }
         });
 
