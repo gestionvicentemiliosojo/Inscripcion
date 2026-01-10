@@ -201,6 +201,17 @@ const UI = {
                         UI.elements.formStatus.classList.add('text-gray-800');
                     }
                 } else {
+                    // WORKAROUND: Manejar el caso en que el script de backend no se ha desplegado correctamente
+                    // y devuelve una respuesta de 'success' (crear) durante una acción de 'search'.
+                    if (result.result === 'success') {
+                        const errorMsg = "Error de Despliegue: El script del servidor no está actualizado. Se creó un documento por error en lugar de buscar.\n\nPor favor, contacta al administrador y pídele que realice una 'Nueva Implementación' (New Deployment) en el Google Apps Script.";
+                        console.error("Error de despliegue obsoleto. El backend devolvió 'success' en una acción de 'search'.", result);
+                        UI.elements.formStatus.textContent = "Error de Despliegue: El script del servidor no está actualizado.";
+                        UI.elements.formStatus.classList.add('text-red-600');
+                        alert(errorMsg);
+                        throw new Error("Error de despliegue obsoleto."); // Detener la ejecución
+                    }
+
                     console.log('Respuesta inesperada del backend:', result);
                     throw new Error(result.error || 'Error desconocido.');
                 }
