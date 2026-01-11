@@ -3,7 +3,7 @@ const CONFIG = {
   EDAD_MIN: 10,
   EDAD_MAX: 18,
   SCRIPT_URL:
-    "https://script.google.com/macros/s/AKfycbyI7vM7vigXn7KuVBDlU1Avaqt_dX5XBKSIM0sY38NNINbhM8BCVIehghsMJXmzZdirNA/exec",
+    "https://script.google.com/macros/s/AKfycbwLLOUxwMJrcyWeAd7hvv_VZ9VBhJtEJR3oRW0MCrm1cfV3ANYKvcR5vdyhEmxA1m2ehg/exec",
 };
 
 // 2. VALIDATOR (Lógica de Validación)
@@ -99,10 +99,8 @@ const UI = {
     enablePadre: document.getElementById("enablePadre"),
     confirmationModal: document.getElementById("confirmationModal"),
     optionsModal: document.getElementById("optionsModal"),
-    notFoundModal: document.getElementById("notFoundModal"),
     continueBtn: document.getElementById("continueBtn"),
     closeModalBtn: document.getElementById("closeModalBtn"),
-    closeNotFoundModalBtn: document.getElementById("closeNotFoundModalBtn"),
     imagePreview: document.getElementById("imagePreview"),
     fotoEstBase64: document.getElementById("fotoEstBase64"),
     fotoEstInput: document.getElementById("fotoEst"),
@@ -205,8 +203,34 @@ const UI = {
           result.result === "not_found" ||
           result.result === "not_found_debug"
         ) {
-          UI.elements.formStatus.classList.add("hidden"); // Ocultar mensaje de texto
-          UI.elements.notFoundModal.classList.remove("hidden"); // Mostrar modal
+          if (result.debug) {
+            console.error("Debug Info:", result.debug);
+            let debugMsg = `No se encontraron datos para la C.I. proporcionada.\n\n--- INFORMACIÓN DE DEPURACIÓN ---\n`;
+            debugMsg += `Cédula Buscada: ${result.debug.receivedCedula}\n`;
+            debugMsg += `Campo de Búsqueda: ${result.debug.receivedSearchType}\n`;
+            debugMsg += `Encabezados de la Hoja: [${result.debug.foundHeaders.join(
+              ", "
+            )}]\n`;
+            debugMsg += `Columna Usada (Índice): ${result.debug.searchedColumnIndex}\n`;
+            debugMsg += `Primeros 5 Valores en Columna: [${result.debug.first5ValuesInColumn.join(
+              ", "
+            )}]\n\n`;
+            debugMsg += `--- EJEMPLO DE COMPARACIÓN ---\n`;
+            debugMsg += `Valor en la Hoja: "${result.debug.comparisonExample.sheetValue}"\n`;
+            debugMsg += `Valor Buscado: "${result.debug.comparisonExample.searchedValue}"\n`;
+            debugMsg += `¿Son Iguales?: ${result.debug.comparisonExample.areEqual}\n\n`;
+            debugMsg += `POSIBLE CAUSA: El valor en la hoja de cálculo puede tener espacios extra, caracteres invisibles o un formato numérico diferente. Asegúrese de que los datos en la hoja sean texto sin formato o números limpios.`;
+
+            UI.elements.formStatus.textContent =
+              "No se encontraron datos. Revisa el cuadro de alerta para más detalles.";
+            UI.elements.formStatus.classList.remove("text-gray-800");
+            UI.elements.formStatus.classList.add("text-orange-600"); // Un color diferente para indicar una advertencia/depuración
+            alert(debugMsg); // Mostrar un alert para asegurar que el usuario vea la información
+          } else {
+            UI.elements.formStatus.textContent =
+              "No se encontraron datos para la C.I. proporcionada.";
+            UI.elements.formStatus.classList.add("text-gray-800");
+          }
         } else {
           // WORKAROUND: Manejar el caso en que el script de backend no se ha desplegado correctamente
           // y devuelve una respuesta de 'success' (crear) durante una acción de 'search'.
@@ -608,11 +632,6 @@ const UI = {
       location.reload(); // Recargar para limpiar todo
     });
 
-    // Cerrar Modal de "No Encontrado"
-    UI.elements.closeNotFoundModalBtn.addEventListener("click", () => {
-      UI.elements.notFoundModal.classList.add("hidden");
-    });
-
     // Cancelado Dropdown (Lógica personalizada)
     const cancelButton = document.getElementById("cancelado-button");
     const cancelOptions = document.getElementById("cancelado-options");
@@ -656,6 +675,3 @@ const UI = {
 
 // INICIALIZAR
 document.addEventListener("DOMContentLoaded", UI.init);
-
-
-
