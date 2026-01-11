@@ -99,8 +99,10 @@ const UI = {
     enablePadre: document.getElementById("enablePadre"),
     confirmationModal: document.getElementById("confirmationModal"),
     optionsModal: document.getElementById("optionsModal"),
+    notFoundModal: document.getElementById("notFoundModal"),
     continueBtn: document.getElementById("continueBtn"),
     closeModalBtn: document.getElementById("closeModalBtn"),
+    closeNotFoundModalBtn: document.getElementById("closeNotFoundModalBtn"),
     imagePreview: document.getElementById("imagePreview"),
     fotoEstBase64: document.getElementById("fotoEstBase64"),
     fotoEstInput: document.getElementById("fotoEst"),
@@ -203,10 +205,8 @@ const UI = {
           result.result === "not_found" ||
           result.result === "not_found_debug"
         ) {
-          UI.elements.formStatus.textContent =
-            "No se encontraron datos para la C.I. proporcionada.";
-          UI.elements.formStatus.classList.remove("text-green-600", "text-red-600");
-          UI.elements.formStatus.classList.add("text-gray-800");
+          UI.elements.formStatus.classList.add("hidden"); // Ocultar mensaje de texto
+          UI.elements.notFoundModal.classList.remove("hidden"); // Mostrar modal
         } else {
           // WORKAROUND: Manejar el caso en que el script de backend no se ha desplegado correctamente
           // y devuelve una respuesta de 'success' (crear) durante una acción de 'search'.
@@ -606,6 +606,11 @@ const UI = {
     // Cerrar Modal
     UI.elements.closeModalBtn.addEventListener("click", () => {
       location.reload(); // Recargar para limpiar todo
+    });
+
+    // Cerrar Modal de "No Encontrado"
+    UI.elements.closeNotFoundModalBtn.addEventListener("click", () => {
+      UI.elements.notFoundModal.classList.add("hidden");
     });
 
     // Cancelado Dropdown (Lógica personalizada)
