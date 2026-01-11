@@ -600,7 +600,7 @@ const UI = {
       UI.elements.formStatus.classList.add("text-gray-800");
 
       try {
-        const response = await fetch(UI.elements.form.action, {
+        const response = await fetch(CONFIG.SCRIPT_URL, {
           method: "POST",
           body: new FormData(UI.elements.form),
         });
