@@ -3,7 +3,7 @@ const CONFIG = {
   EDAD_MIN: 10,
   EDAD_MAX: 18,
   SCRIPT_URL:
-    "https://script.google.com/macros/s/AKfycbwD-YnMOJY84msyDtEpa1amJZLH3N1ggYwCEkqiDRH5oq0sXsR5KfOgIllJgeghcRb3J/exec",
+    "https://script.google.com/macros/s/AKfycbydjje5dDAlZYesywMx07ZSAx-CZbSp8SXsjQFPExXXf3CxVDwDbnXJByhOOkvCwo7Wpw/exec",
 };
 
 // 2. VALIDATOR (Lógica de Validación)
@@ -656,3 +656,4 @@ const UI = {
 
 // INICIALIZAR
 document.addEventListener("DOMContentLoaded", UI.init);
+
