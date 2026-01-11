@@ -13,8 +13,11 @@ const Validator = {
   // Validación de Cédula: 7 u 8 dígitos numéricos
   esCedulaValida: (cedula) => /^\d{7,8}$/.test(cedula),
 
-  // Validación de Teléfono: 11 dígitos numéricos (ej. 04141234567)
-  esTelefonoValido: (telefono) => /^\d{11}$/.test(telefono),
+  // Validación para Celular: 11 dígitos numéricos
+  esCelularValido: (telefono) => /^\d{11}$/.test(telefono),
+
+  // Validación para Teléfono Fijo: formato 0255-1234567
+  esTelefonoFijoValido: (telefono) => /^\d{4}-\d{7}$/.test(telefono),
 
   mostrarError: (input, mensaje) => {
     input.classList.add("invalid");
@@ -62,19 +65,28 @@ const Validator = {
       }
     }
 
-    // 4. Validar Teléfonos (por ID o nombre que contenga 'tel' o 'cel')
-    if (
-      (input.id.startsWith("tel") ||
-        input.id.startsWith("cel") ||
-        input.id === "contEmerg") &&
-      valor
-    ) {
-      if (!Validator.esTelefonoValido(valor)) {
-        Validator.mostrarError(
-          input,
-          "El teléfono debe tener 11 dígitos (ej. 04141234567)."
-        );
-        return false;
+    // 4. Validar Teléfonos
+    const id = input.id;
+    if (valor) {
+      // Solo si hay valor
+      if (id.startsWith("telHab")) {
+        // Teléfonos fijos
+        if (!Validator.esTelefonoFijoValido(valor)) {
+          Validator.mostrarError(
+            input,
+            "El teléfono debe tener 11 dígitos (0255-1234567)."
+          );
+          return false;
+        }
+      } else if (id.startsWith("cel") || id === "contEmerg") {
+        // Celulares
+        if (!Validator.esCelularValido(valor)) {
+          Validator.mostrarError(
+            input,
+            "El celular debe tener 11 dígitos (ej. 04141234567)."
+          );
+          return false;
+        }
       }
     }
 
@@ -442,9 +454,7 @@ const UI = {
       "ciMad",
       "ciPad",
       "ciRep",
-      "telHabMad",
       "celMad",
-      "telHabPad",
       "celPad",
       "telHabRep",
       "celRep",
