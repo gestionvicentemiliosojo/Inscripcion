@@ -46,41 +46,16 @@
                         <legend class="text-xl font-semibold text-gray-700 mb-4 px-2">Datos del Estudiante</legend>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
-                                <label for="ano_cursar" class="block text-sm font-medium text-gray-700">Año
-                                    Escolar:</label>
-                                <select name="ano_cursar" id="ano_cursar" data-required="true"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
-                            </div>
-                            <div>
-                                <label for="anoEsc" class="block text-sm font-medium text-gray-700">Año a
-                                    Cursar:</label>
-                                <select name="anoEsc" id="anoEsc" data-required="true"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
-                                    <option value="">Selecciona</option>
-                                    <option value="1°">1°</option>
-                                    <option value="2°">2°</option>
-                                    <option value="3°">3°</option>
-                                    <option value="4°">4°</option>
-                                    <option value="5°">5°</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="nomEst" class="block text-sm font-medium text-gray-700">Nombres:</label>
-                                <input type="text" name="nomEst" id="nomEst" data-required="true"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                    maxlength="19">
-                            </div>
-                            <div>
-                                <label for="apeEst" class="block text-sm font-medium text-gray-700">Apellidos:</label>
-                                <input type="text" name="apeEst" id="apeEst" data-required="true"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                    maxlength="19">
-                            </div>
-                            <div>
                                 <label for="ciEst" class="block text-sm font-medium text-gray-700">Cédula:</label>
                                 <input type="text" name="ciEst" id="ciEst" inputmode="numeric" data-required="true"
                                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     maxlength="8">
+                            </div>
+                            <div>
+                                <label for="ano_cursar" class="block text-sm font-medium text-gray-700">Año
+                                    Escolar:</label>
+                                <select name="ano_cursar" id="ano_cursar" data-required="true"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"></select>
                             </div>
                             <div>
                                 <label for="sexoEst" class="block text-sm font-medium text-gray-700">Sexo:</label>
@@ -254,17 +229,17 @@
                         <legend class="text-xl font-semibold text-gray-700 mb-4 px-2">Datos de la Madre</legend>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
+                                <label for="ciMad" class="block text-sm font-medium text-gray-700">C.I.:</label>
+                                <input type="text" name="ciMad" id="ciMad" inputmode="numeric" data-required="true"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    maxlength="8">
+                            </div>
+                            <div>
                                 <label for="nomMad" class="block text-sm font-medium text-gray-700">Nombres y
                                     Apellidos:</label>
                                 <input type="text" name="nomMad" id="nomMad" data-required="true"
                                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     maxlength="30">
-                            </div>
-                            <div>
-                                <label for="ciMad" class="block text-sm font-medium text-gray-700">C.I.:</label>
-                                <input type="text" name="ciMad" id="ciMad" inputmode="numeric" data-required="true"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                    maxlength="8">
                             </div>
                             <div>
                                 <label for="telHabMad" class="block text-sm font-medium text-gray-700">Teléfono
@@ -329,17 +304,17 @@
                         <legend class="text-xl font-semibold text-gray-700 mb-4 px-2">Datos del Padre</legend>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
+                                <label for="ciPad" class="block text-sm font-medium text-gray-700">C.I.:</label>
+                                <input type="text" name="ciPad" id="ciPad" inputmode="numeric" data-required="true"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    maxlength="8">
+                            </div>
+                            <div>
                                 <label for="nomPad" class="block text-sm font-medium text-gray-700">Nombres y
                                     Apellidos:</label>
                                 <input type="text" name="nomPad" id="nomPad" data-required="true"
                                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     maxlength="30">
-                            </div>
-                            <div>
-                                <label for="ciPad" class="block text-sm font-medium text-gray-700">C.I.:</label>
-                                <input type="text" name="ciPad" id="ciPad" inputmode="numeric" data-required="true"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                    maxlength="8">
                             </div>
                             <div>
                                 <label for="telHabPad" class="block text-sm font-medium text-gray-700">Teléfono
@@ -405,17 +380,17 @@
                             Colegio</legend>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div>
+                                <label for="ciRep" class="block text-sm font-medium text-gray-700">C.I.:</label>
+                                <input type="text" name="ciRep" id="ciRep" inputmode="numeric" data-required="true"
+                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                                    maxlength="8">
+                            </div>
+                            <div>
                                 <label for="nomRep" class="block text-sm font-medium text-gray-700">Nombres y Apellidos
                                     Representante:</label>
                                 <input type="text" name="nomRep" id="nomRep" data-required="true"
                                     class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     maxlength="30">
-                            </div>
-                            <div>
-                                <label for="ciRep" class="block text-sm font-medium text-gray-700">C.I.:</label>
-                                <input type="text" name="ciRep" id="ciRep" inputmode="numeric" data-required="true"
-                                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
-                                    maxlength="8">
                             </div>
                             <div>
                                 <label for="telHabRep" class="block text-sm font-medium text-gray-700">Teléfono
