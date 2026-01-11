@@ -3,7 +3,7 @@ const CONFIG = {
   EDAD_MIN: 10,
   EDAD_MAX: 18,
   SCRIPT_URL:
-    "https://script.google.com/macros/s/AKfycbwLLOUxwMJrcyWeAd7hvv_VZ9VBhJtEJR3oRW0MCrm1cfV3ANYKvcR5vdyhEmxA1m2ehg/exec",
+    "https://script.google.com/macros/s/AKfycbwD-YnMOJY84msyDtEpa1amJZLH3N1ggYwCEkqiDRH5oq0sXsR5KfOgIllJgeghcRb3J/exec",
 };
 
 // 2. VALIDATOR (Lógica de Validación)
