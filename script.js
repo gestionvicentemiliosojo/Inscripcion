@@ -72,7 +72,7 @@ const Validator = {
       if (!Validator.esTelefonoValido(valor)) {
         Validator.mostrarError(
           input,
-          "El teléfono debe tener 11 dígitos (ej. 02551234567 o 04141234567)."
+          "El teléfono debe tener 11 dígitos (ej. 02551234567)."
         );
         return false;
       }
