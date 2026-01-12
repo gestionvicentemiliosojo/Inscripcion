@@ -99,6 +99,9 @@ const UI = {
     enablePadre: document.getElementById("enablePadre"),
     confirmationModal: document.getElementById("confirmationModal"),
     optionsModal: document.getElementById("optionsModal"),
+      notFoundModal: document.getElementById("notFoundModal"),
+      notFoundRectifyBtn: document.getElementById("notFoundRectifyBtn"),
+      notFoundManualBtn: document.getElementById("notFoundManualBtn"),
     continueBtn: document.getElementById("continueBtn"),
     closeModalBtn: document.getElementById("closeModalBtn"),
     imagePreview: document.getElementById("imagePreview"),
@@ -113,6 +116,7 @@ const UI = {
   state: {
     currentStepIndex: 0,
     visibleSteps: ["step1"],
+    lastSearchField: null,
   },
 
   stepDescriptions: {
@@ -133,6 +137,8 @@ const UI = {
   },
 
   async searchByCedula(cedula, searchType) {
+    // Guardar qué campo disparó la búsqueda para acciones del modal
+    UI.state.lastSearchField = searchType;
     if (Validator.esCedulaValida(cedula)) {
       UI.elements.formStatus.textContent = `Buscando datos por C.I. (${searchType})...`;
       UI.elements.formStatus.classList.remove(
@@ -207,9 +213,14 @@ const UI = {
           if (result.debug) {
             console.debug("Debug Info:", result.debug);
           }
-          // Ocultar cualquier mensaje visible de estado para este caso.
+          // Mostrar modal informativo en lugar de texto en la página
           UI.elements.formStatus.textContent = "";
           UI.elements.formStatus.classList.add("hidden");
+          if (UI.elements.notFoundModal) {
+            UI.elements.notFoundModal.classList.remove("opacity-0", "pointer-events-none");
+            const inner = UI.elements.notFoundModal.querySelector(".transform");
+            if (inner) inner.classList.remove("scale-95");
+          }
         } else {
           // WORKAROUND: Manejar el caso en que el script de backend no se ha desplegado correctamente
           // y devuelve una respuesta de 'success' (crear) durante una acción de 'search'.
@@ -389,7 +400,7 @@ const UI = {
     // Estatura
     const estSelect = document.getElementById("estatura");
     estSelect.innerHTML = '<option value="">Selecciona</option>';
-    for (let i = 100; i <= 200; i += 5) {
+    for (let i = 100; i <= 200; i += 1) {
       const option = document.createElement("option");
       option.value = i;
       option.textContent = `${i} cm`;
@@ -610,6 +621,42 @@ const UI = {
     UI.elements.closeModalBtn.addEventListener("click", () => {
       location.reload(); // Recargar para limpiar todo
     });
+
+    // Acciones del NotFound Modal
+    if (UI.elements.notFoundRectifyBtn) {
+      UI.elements.notFoundRectifyBtn.addEventListener("click", () => {
+        // Cerrar modal
+        if (UI.elements.notFoundModal) {
+          UI.elements.notFoundModal.classList.add("opacity-0", "pointer-events-none");
+          const inner = UI.elements.notFoundModal.querySelector(".transform");
+          if (inner) inner.classList.add("scale-95");
+        }
+        // Enfocar el campo que disparó la búsqueda para rectificar
+        const fieldId = UI.state.lastSearchField;
+        if (fieldId) {
+          const el = document.getElementById(fieldId);
+          if (el) {
+            el.focus();
+            // Seleccionar el contenido para facilitar la edición
+            if (typeof el.select === "function") el.select();
+          }
+        }
+      });
+    }
+
+    if (UI.elements.notFoundManualBtn) {
+      UI.elements.notFoundManualBtn.addEventListener("click", () => {
+        // Cerrar modal
+        if (UI.elements.notFoundModal) {
+          UI.elements.notFoundModal.classList.add("opacity-0", "pointer-events-none");
+          const inner = UI.elements.notFoundModal.querySelector(".transform");
+          if (inner) inner.classList.add("scale-95");
+        }
+        // Poner foco en el primer campo para ingresar datos manualmente (nombres)
+        const manualFocus = document.getElementById("nomEst") || UI.elements.form.querySelector("input, select, textarea");
+        if (manualFocus) manualFocus.focus();
+      });
+    }
 
     // Cancelado Dropdown (Lógica personalizada)
     const cancelButton = document.getElementById("cancelado-button");
