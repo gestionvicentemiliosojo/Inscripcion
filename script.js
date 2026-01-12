@@ -203,15 +203,13 @@ const UI = {
           result.result === "not_found" ||
           result.result === "not_found_debug"
         ) {
-          // Si el backend devuelve información de depuración, solo la registramos en consola
-          // para no mostrar datos técnicos al usuario final.
+          // Registrar depuración en consola, pero no mostrar detalles al usuario.
           if (result.debug) {
             console.debug("Debug Info:", result.debug);
           }
-          UI.elements.formStatus.textContent =
-            "No se encontraron datos para la C.I. proporcionada.";
-          UI.elements.formStatus.classList.remove("text-gray-800");
-          UI.elements.formStatus.classList.add("text-orange-600");
+          // Ocultar cualquier mensaje visible de estado para este caso.
+          UI.elements.formStatus.textContent = "";
+          UI.elements.formStatus.classList.add("hidden");
         } else {
           // WORKAROUND: Manejar el caso en que el script de backend no se ha desplegado correctamente
           // y devuelve una respuesta de 'success' (crear) durante una acción de 'search'.
