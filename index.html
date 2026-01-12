@@ -696,6 +696,31 @@
         </div>
     </div>
 
+    <div id="notFoundModal"
+        class="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
+        <div
+            class="bg-white p-8 rounded-2xl shadow-2xl text-center max-w-sm w-full transform scale-95 transition-transform duration-300">
+            <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-yellow-100 mb-5">
+                <svg class="h-10 w-10 text-yellow-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M12 8v.01" />
+                </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-gray-800 mb-3">Cédula no encontrada</h2>
+            <p class="text-gray-600 mb-6">No se encontraron registros para la cédula ingresada. Rectifica bien la cédula o agrega manualmente los datos.</p>
+            <div class="grid grid-cols-2 gap-3">
+                <button type="button" id="notFoundRectifyBtn"
+                    class="w-full bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-sm transition-all duration-200">
+                    Rectificar Cédula
+                </button>
+                <button type="button" id="notFoundManualBtn"
+                    class="w-full bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-lg shadow-lg transition-all duration-200">
+                    Agregar Manualmente
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div id="confirmationModal"
         class="fixed inset-0 bg-gray-900 bg-opacity-60 flex justify-center items-center z-50 opacity-0 pointer-events-none transition-opacity duration-300">
         <div
