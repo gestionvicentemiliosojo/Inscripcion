@@ -161,18 +161,29 @@ const UI = {
         const result = await response.json();
 
         if (result.result === "found") {
-          UI.elements.formStatus.textContent =
-            "Datos encontrados y cargados en el formulario.";
+          const studentData = result.data;
+          // Si la búsqueda fue desde un campo parental, solo cargar los campos correspondientes
+          const suffixMap = { ciEst: "Est", ciMad: "Mad", ciPad: "Pad", ciRep: "Rep" };
+          const targetSuffix = suffixMap[searchType] || null;
+
+          // Mensaje contextual según lo cargado
+          let successMsg = "Datos encontrados y cargados en el formulario.";
+          if (targetSuffix === "Mad") successMsg = "Datos de la madre cargados.";
+          if (targetSuffix === "Pad") successMsg = "Datos del padre cargados.";
+          if (targetSuffix === "Rep") successMsg = "Datos del representante cargados.";
+          UI.elements.formStatus.textContent = successMsg;
           UI.elements.formStatus.classList.add("text-green-600");
 
-          const studentData = result.data;
-          // Rellenar todos los campos del formulario
           for (const key in studentData) {
+            // Si no es búsqueda del estudiante, filtrar por sufijo (evitar sobreescribir otros bloques)
+            if (targetSuffix && targetSuffix !== "Est") {
+              if (!key.includes(targetSuffix)) continue;
+            }
+
             const input = document.getElementById(key);
             if (input) {
               if (input.type === "checkbox") {
-                input.checked =
-                  studentData[key] === "Sí" || studentData[key] === true;
+                input.checked = studentData[key] === "Sí" || studentData[key] === true;
               } else if (key === "cancelado") {
                 const values = studentData[key].split(",").map((s) => s.trim());
                 const cancelCheckboxes = document.querySelectorAll(
