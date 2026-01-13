@@ -1,0 +1,134 @@
+Manual de Instalación y Configuración del Sistema de Ficha de Inscripción
+
+Fecha de Creación: 12 de enero de 2026
+
+---
+### ÍNDICE
+---
+1. Descripción General del Proyecto
+2. Configuración del Backend (Google Apps Script)
+3. Configuración del Frontend (Formulario Web)
+4. **(Nuevo)** Alojamiento del Frontend en GitHub Pages
+5. Puesta en Marcha y Uso
+
+---
+### 1. DESCRIPCIÓN GENERAL DEL PROYECTO
+---
+Este sistema se compone de dos partes principales:
+- **Frontend**: Un formulario web (`index.html`) que los usuarios llenan. Utiliza JavaScript (`script.js`) para la lógica interactiva y CSS (`styles.css`) para el diseño.
+- **Backend**: Un script de Google Apps Script (`app script.txt`) que recibe los datos del formulario, los guarda en una hoja de cálculo de Google Sheets, genera un documento PDF a partir de una plantilla de Google Docs y envía correos de notificación.
+
+"Instalar" este proyecto significa configurar el entorno de Google, conectar el frontend con el backend y alojar el frontend en un servicio web como GitHub Pages.
+
+---
+### 2. CONFIGURACIÓN DEL BACKEND (GOOGLE APPS SCRIPT)
+---
+Este es el paso más importante. Debes configurar tu propio backend en la nube de Google.
+
+**Paso 2.1: Preparar los Recursos en Google Drive**
+
+1.  **Crea una Carpeta en Google Drive:**
+    - Ve a tu Google Drive y crea una nueva carpeta. Dale un nombre claro, por ejemplo, "Fichas de Estudiantes Generadas".
+    - Haz clic derecho sobre la carpeta > "Obtener enlace" y copia el ID de la carpeta. El ID es la parte final de la URL. Ejemplo: `.../folders/17r-kcMIQoHepeOmB5Oe7lIpZc9Ouf3eJ` -> El ID es `17r-kcMIQoHepeOmB5Oe7lIpZc9Ouf3eJ`.
+    - **Guarda este ID.**
+
+2.  **Crea una Hoja de Cálculo (Google Sheet):**
+    - En Google Drive, crea una nueva "Hoja de cálculo de Google". Dale un nombre, por ejemplo, "Base de Datos de Inscripciones".
+    - Abre la hoja y copia su ID desde la URL. Ejemplo: `.../d/1R-WVBTMbcARzzPemsV5JThHHdqXuErS-5nUmSAvLL6E/edit` -> El ID es `1R-WVBTMbcARzzPemsV5JThHHdqXuErS-5nUmSAvLL6E`.
+    - **Guarda este ID.**
+    - *(Nota: El script está programado para crear una pestaña llamada "Registros Fichas" y añadir los encabezados si no existen, pero es buena práctica tener el archivo creado).*
+
+3.  **Crea una Plantilla de Documento (Google Doc):**
+    - Crea un nuevo "Documento de Google". Este será el modelo para la ficha del estudiante.
+    - Diseña el documento como desees que se vea la ficha final.
+    - En los lugares donde deben ir los datos del estudiante, usa "placeholders" (marcadores de posición) con el formato `{{nombre_del_campo}}`. Los nombres de los campos deben coincidir exactamente con los del formulario.
+    - **Ejemplos de placeholders**: `{{nomEst}}`, `{{apeEst}}`, `{{ciEst}}`, `{{fotoEst}}`, etc. Puedes ver todos los nombres de campo en el archivo `index.html` en los atributos `name` de cada `input`.
+    - Para la foto, simplemente pon el placeholder `{{fotoEst}}` donde quieras que aparezca.
+    - Copia el ID del documento de la URL. Ejemplo: `.../d/1NanYU_gCd0CN3jpfuIk7tFZFWkZiXbtHgtaBfzIjPPM/edit` -> El ID es `1NanYU_gCd0CN3jpfuIk7tFZFWkZiXbtHgtaBfzIjPPM`.
+    - **Guarda este ID.**
+
+**Paso 2.2: Crear y Configurar el Script**
+
+1.  **Ve a Google Apps Script:**
+    - Visita [script.google.com](https://script.google.com) y haz clic en "Nuevo proyecto".
+
+2.  **Pega el Código:**
+    - Se abrirá un editor de código. Borra cualquier contenido que haya por defecto.
+    - Abre el archivo `app script.txt` de tu proyecto, copia TODO su contenido y pégalo en el editor de Google Apps Script.
+
+3.  **Actualiza los IDs en el Script:**
+    - En el código que acabas de pegar, busca la sección `// --- CONFIGURACIÓN GLOBAL ---`.
+    - Reemplaza los IDs de ejemplo con los que guardaste en el Paso 2.1:
+      - `IDS.TEMPLATE`: Pega el ID de tu plantilla de Google Docs.
+      - `IDS.FOLDER`: Pega el ID de tu carpeta de Google Drive.
+      - `IDS.SHEET`: Pega el ID de tu hoja de cálculo de Google Sheets.
+
+4.  **Despliega el Script como Aplicación Web:**
+    - En la esquina superior derecha, haz clic en el botón **"Implementar"** y selecciona **"Nueva implementación"**.
+    - Haz clic en el icono de engranaje ("Seleccionar tipo") y elige **"Aplicación web"**.
+    - En la configuración, establece lo siguiente:
+        - **Descripción:** "API para Formulario de Inscripción".
+        - **Ejecutar como:** "Yo (tu dirección de correo)".
+        - **Quién tiene acceso:** **MUY IMPORTANTE:** Cambia la opción a **"Cualquier persona"** (o "Anyone"). Esto es crucial para que el formulario público pueda enviar datos.
+    - Haz clic en **"Implementar"**.
+
+5.  **Autoriza los Permisos:**
+    - Google te pedirá que autorices los permisos para que el script pueda acceder a tus Docs, Sheets, Drive y Gmail. Haz clic en "Autorizar acceso", selecciona tu cuenta de Google y, si aparece una advertencia de "aplicación no verificada", haz clic en "Configuración avanzada" y luego en "Ir a (nombre del proyecto) (no seguro)". Concede todos los permisos.
+
+6.  **Copia la URL de la Aplicación Web:**
+    - Una vez implementado, se mostrará una ventana con la **"URL de la aplicación web"**. ¡Esta URL es tu backend!
+    - **Copia esta URL y guárdala.** La necesitarás en el siguiente paso.
+
+---
+### 3. CONFIGURACIÓN DEL FRONTEND (FORMULARIO WEB)
+---
+Ahora debes indicarle al formulario a qué URL debe enviar los datos.
+
+1.  **Abre `script.js`:**
+    - Edita el archivo `script.js`.
+    - Busca la línea `SCRIPT_URL:` dentro de la `const CONFIG`.
+    - Pega la URL de tu aplicación web (la que copiaste en el paso 2.6) entre las comillas.
+    - **Guarda el archivo.**
+
+2.  **Abre `index.html`:**
+    - Edita el archivo `index.html`.
+    - Busca la etiqueta `<form ...>`.
+    - Verás un atributo `action="..."`.
+    - Pega la MISMA URL de tu aplicación web en el atributo `action`.
+    - **Guarda el archivo.**
+
+    *Nota importante: Es fundamental que la URL sea la misma en `script.js` (para la función de búsqueda) y en `index.html` (para el envío del formulario).*
+
+---
+### 4. ALOJAMIENTO DEL FRONTEND EN GITHUB PAGES
+---
+Para que el formulario sea accesible públicamente en internet, puedes alojarlo gratuitamente en GitHub Pages.
+
+**Paso 4.1: Sube tu Proyecto a GitHub**
+1.  Crea una cuenta en [GitHub](https://github.com/) si aún no tienes una.
+2.  Crea un nuevo repositorio. Dale un nombre (ej. `formulario-inscripcion`) y asegúrate de que sea **Público**.
+3.  Sube los archivos del frontend (`index.html`, `script.js`, `styles.css` y `logo.png`) a tu nuevo repositorio. Puedes hacerlo usando Git en tu terminal o subiendo los archivos directamente desde la interfaz de GitHub.
+
+**Paso 4.2: Activa GitHub Pages**
+1.  Dentro de tu repositorio en GitHub, ve a la pestaña **"Settings"** (Configuración).
+2.  En el menú de la izquierda, busca y haz clic en la sección **"Pages"**.
+3.  En la sección "Build and deployment", bajo "Source", selecciona **"Deploy from a branch"**.
+4.  Asegúrate de que la rama seleccionada sea `main` (o `master`) y la carpeta sea `/(root)`.
+5.  Haz clic en **"Save"**.
+
+GitHub tardará uno o dos minutos en construir y desplegar tu sitio. Una vez listo, en esta misma sección aparecerá un recuadro verde con la URL pública de tu formulario, que será algo como: `https://<tu-usuario-de-github>.github.io/<nombre-del-repositorio>/`.
+
+**Nota sobre CORS:** La comunicación entre tu página en GitHub (`github.io`) y tu API en Google (`script.google.com`) es una solicitud "cross-origin". El script que te proporcioné está configurado para manejar esto correctamente. Si en el futuro realizas cambios en el backend, asegúrate de que siga devolviendo el contenido con `ContentService`, ya que esto gestiona los permisos necesarios (cabeceras CORS) para que el navegador no bloquee la comunicación.
+
+---
+### 5. PUESTA EN MARCHA Y USO
+---
+
+1.  **Abre el Formulario Público:**
+    - Visita la URL de GitHub Pages que obtuviste en el paso 4.2. Ya no es necesario abrir el archivo `index.html` localmente.
+    - Comparte este enlace con los usuarios que necesiten llenar el formulario.
+
+2.  **Uso:**
+    - El formulario está listo para ser utilizado públicamente. Los datos enviados se registrarán en tu Google Sheet, se creará un documento en tu carpeta de Google Drive y se enviarán los correos de notificación desde tu cuenta de Google.
+
+**¡Instalación completada!**
